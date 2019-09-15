@@ -12,11 +12,11 @@ public class MyTaskExecutor<T> implements CustomExecutor<T> {
     private final static Logger logger = LoggerFactory.getLogger(MyTaskExecutor.class);
 
     @Override
-    public CompletableFuture<T> execute(Task<T> task) {
+    public T execute(Task<T> task) {
         try {
             CompletableFuture<T> future = new CompletableFuture<>();
             future.complete(task.getExecutedTask().call());
-            return future;
+            return future.get();
         } catch (Exception ex) {
             logger.debug("error with calling task, timeMark=" + task.getTimeMark());
             throw new ExecutorException(ex.getMessage());
