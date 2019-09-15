@@ -1,11 +1,11 @@
 package com.femirion.ce.executor;
 
-import java.time.LocalDateTime;
-import java.util.concurrent.Callable;
+import com.femirion.ce.task.Task;
+
 import java.util.concurrent.CompletableFuture;
 
 public interface CustomExecutor<T> {
 
-    CompletableFuture<T> execute(LocalDateTime timeMark, Callable<T> call);
+    CompletableFuture<T> execute(Task<T> call);
 
 }
