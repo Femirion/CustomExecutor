@@ -4,10 +4,10 @@ import com.femirion.ce.task.ExecutedTask;
 import com.femirion.ce.task.Task;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -15,7 +15,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 public class CustomExecutor<T> implements Executor<T> {
 
     private final BlockingQueue<ExecutedTask<T>> taskQueue;
-    private final List<Worker<T>> workerList = new ArrayList<>();
+    private final List<Worker<T>> workerList = new CopyOnWriteArrayList<>();
 
     public CustomExecutor(int countOfWorkers, int initialCapacity) {
         if (countOfWorkers <= 0) {
