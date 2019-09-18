@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MyTaskExecutorTest {
+public class CustomExecutorTest {
 
     @Test
     public void createExecutor() {
@@ -22,7 +22,7 @@ public class MyTaskExecutorTest {
         int workersCount = 5;
 
         // then
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(workersCount, 10);
+        CustomExecutor<String> subj = new CustomExecutor<>(workersCount, 10);
 
         // when
         assertEquals(workersCount, subj.getWorkerList().size());
@@ -34,7 +34,7 @@ public class MyTaskExecutorTest {
         int workersCount = -1;
 
         // then
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(workersCount, 10);
+        CustomExecutor<String> subj = new CustomExecutor<>(workersCount, 10);
 
         // when
         assertEquals(workersCount, subj.getWorkerList().size());
@@ -44,7 +44,7 @@ public class MyTaskExecutorTest {
     public void shutdownExecutor() throws Exception {
         // given
         int workersCount = 5;
-        MyTaskExecutor<String> executor = new MyTaskExecutor<>(workersCount, 10);
+        CustomExecutor<String> executor = new CustomExecutor<>(workersCount, 10);
 
         List<Worker<String>> workers = executor.getWorkerList();
         // check that all workers are prepare for work
@@ -76,7 +76,7 @@ public class MyTaskExecutorTest {
     @Test
     public void execute() throws Exception {
         // given
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(1, 10);
+        CustomExecutor<String> subj = new CustomExecutor<>(1, 10);
 
 
         // then
@@ -89,7 +89,7 @@ public class MyTaskExecutorTest {
     @Test(expected = ExecutionException.class)
     public void handleError() throws Exception {
         // given
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(1, 10);
+        CustomExecutor<String> subj = new CustomExecutor<>(1, 10);
 
 
         // then
@@ -111,7 +111,7 @@ public class MyTaskExecutorTest {
     @Test
     public void checkPriority() throws Exception {
         // given
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(1, 10);
+        CustomExecutor<String> subj = new CustomExecutor<>(1, 10);
 
         LocalDateTime time1 = LocalDateTime.of(1999, 12, 21, 14, 21, 19);
         LocalDateTime time2 = LocalDateTime.of(2001, 10, 2, 3, 15, 15);
@@ -152,7 +152,7 @@ public class MyTaskExecutorTest {
     @Test
     public void executeTwoTaskInTwoThread() throws Exception {
         // given
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(2, 10);
+        CustomExecutor<String> subj = new CustomExecutor<>(2, 10);
 
         // then
         Future<String> result1 = subj.execute(new Task<>(LocalDateTime.now(), () -> "test1"));
@@ -166,7 +166,7 @@ public class MyTaskExecutorTest {
     @Test
     public void executeTwoTaskInOneThread() throws Exception {
         // given
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(1, 10);
+        CustomExecutor<String> subj = new CustomExecutor<>(1, 10);
 
         // then
         Future<String> result1 = subj.execute(new Task<>(LocalDateTime.now(), () -> "test1"));
@@ -180,7 +180,7 @@ public class MyTaskExecutorTest {
     @Test
     public void execute10TaskInTwoThread() throws Exception {
         // given
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(2, 10);
+        CustomExecutor<String> subj = new CustomExecutor<>(2, 10);
 
         int[] trick = new int[1];
         List<Future<String>> results = new ArrayList<>();
@@ -209,7 +209,7 @@ public class MyTaskExecutorTest {
     @Test
     public void executeSlowTasks() throws Exception {
         // given
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(3, 10);
+        CustomExecutor<String> subj = new CustomExecutor<>(3, 10);
 
         int[] trick = new int[1];
         List<Future<String>> results = new ArrayList<>();

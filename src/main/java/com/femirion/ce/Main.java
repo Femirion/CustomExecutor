@@ -2,7 +2,7 @@ package com.femirion.ce;
 
 
 import com.femirion.ce.executor.CustomExecutor;
-import com.femirion.ce.executor.MyTaskExecutor;
+import com.femirion.ce.executor.Executor;
 import com.femirion.ce.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +25,7 @@ public class Main {
         Task<String> task3 = new Task<>(time3, () -> "task3");
 
 
-
-        CustomExecutor<String> executor = new MyTaskExecutor<>(1, 5);
+        Executor<String> executor = new CustomExecutor<>(1, 5);
 
 
         Future<String> result1 = executor.execute(task1);
