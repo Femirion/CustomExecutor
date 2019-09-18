@@ -1,11 +1,9 @@
 package com.femirion.ce.executor;
 
-import com.femirion.ce.Worker;
 import com.femirion.ce.task.Task;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,20 +14,19 @@ public class MyTaskExecutorTest {
     public void createExecutor() {
         // given
         int workersCount = 5;
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(workersCount);
-
 
         // then
-        List<Worker<String>> workers = subj.getWorkerList();
+        MyTaskExecutor<String> subj = new MyTaskExecutor<>(workersCount, 10);
 
         // when
-        assertEquals(workersCount, workers.size());
+        assertEquals(workersCount, subj.getWorkerList().size());
+        assertEquals(workersCount, subj.getWorkersConntInQueue());
     }
 
     @Test
     public void executeInTwoThread() {
         // given
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(2);
+        MyTaskExecutor<String> subj = new MyTaskExecutor<>(2, 10);
 
         // then
         String result1 = subj.execute(new Task<>(LocalDateTime.now(),
@@ -54,7 +51,7 @@ public class MyTaskExecutorTest {
     @Test
     public void execute() {
         // given
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>(1);
+        MyTaskExecutor<String> subj = new MyTaskExecutor<>(1, 10);
 
 
         // then

@@ -6,19 +6,22 @@ import com.femirion.ce.task.Task;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.PriorityBlockingQueue;
 
 @Slf4j
 public class MyTaskExecutor<T> implements CustomExecutor<T> {
 
-    private BlockingQueue<Worker<T>> workers;
+    private final BlockingQueue<Task<T>> taskQueue;
+    private final BlockingQueue<Worker<T>> workers;
     // for unit-test
-    private List<Worker<T>> workerList = new ArrayList<>();
+    private final List<Worker<T>> workerList = new ArrayList<>();
 
-    public MyTaskExecutor(int countOfWorkers) {
+    public MyTaskExecutor(int countOfWorkers, int taskQueueCapasity) {
         if (countOfWorkers <= 0) {
             throw new IllegalArgumentException("you should set positive count of workers");
         }
@@ -29,6 +32,8 @@ public class MyTaskExecutor<T> implements CustomExecutor<T> {
             workers.add(worker);
             workerList.add(worker);
         }
+
+        taskQueue = new PriorityBlockingQueue<>(taskQueueCapasity, Comparator.comparing(Task::getTimeMark));
     }
 
 
@@ -49,6 +54,13 @@ public class MyTaskExecutor<T> implements CustomExecutor<T> {
      */
     List<Worker<T>> getWorkerList() {
         return workerList;
+    }
+
+    /**
+     * for JUnit
+     */
+    int getWorkersConntInQueue() {
+        return workers.size();
     }
 
 }
