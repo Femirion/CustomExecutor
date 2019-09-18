@@ -53,6 +53,4 @@ public class Worker<T> extends Thread {
         return finishedTask;
     }
 
-
-
 }

@@ -1,15 +1,15 @@
 package com.femirion.ce.task;
 
-import lombok.Getter;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.FutureTask;
 
-@Getter
+@Value
 public class ExecutedTask<T> {
 
-    private volatile LocalDateTime timeMark;
-    private volatile FutureTask<T> task;
+    private LocalDateTime timeMark;
+    private FutureTask<T> task;
 
     public ExecutedTask(Task<T> task) {
         timeMark = task.getTimeMark();
