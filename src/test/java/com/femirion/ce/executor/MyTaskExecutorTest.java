@@ -13,7 +13,7 @@ public class MyTaskExecutorTest {
     @Test
     public void executeInTwoThread() {
         // given
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>();
+        MyTaskExecutor<String> subj = new MyTaskExecutor<>(2);
 
         // then
         String result1 = subj.execute(new Task<>(LocalDateTime.now(),
@@ -38,7 +38,7 @@ public class MyTaskExecutorTest {
     @Test
     public void execute() {
         // given
-        MyTaskExecutor<String> subj = new MyTaskExecutor<>();
+        MyTaskExecutor<String> subj = new MyTaskExecutor<>(1);
 
 
         // then
