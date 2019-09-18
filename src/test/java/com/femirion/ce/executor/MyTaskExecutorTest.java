@@ -1,14 +1,30 @@
 package com.femirion.ce.executor;
 
+import com.femirion.ce.Worker;
 import com.femirion.ce.task.Task;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class MyTaskExecutorTest {
 
+
+    @Test
+    public void createExecutor() {
+        // given
+        int workersCount = 5;
+        MyTaskExecutor<String> subj = new MyTaskExecutor<>(workersCount);
+
+
+        // then
+        List<Worker<String>> workers = subj.getWorkerList();
+
+        // when
+        assertEquals(workersCount, workers.size());
+    }
 
     @Test
     public void executeInTwoThread() {
