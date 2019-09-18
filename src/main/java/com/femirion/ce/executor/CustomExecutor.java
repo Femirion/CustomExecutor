@@ -1,6 +1,6 @@
 package com.femirion.ce.executor;
 
-import com.femirion.ce.task.ExecutedTask;
+import com.femirion.ce.task.ExecutingTask;
 import com.femirion.ce.task.Task;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,7 +14,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 @Slf4j
 public class CustomExecutor<T> implements Executor<T> {
 
-    private final BlockingQueue<ExecutedTask<T>> taskQueue;
+    private final BlockingQueue<ExecutingTask<T>> taskQueue;
     private final List<Worker<T>> workerList = new CopyOnWriteArrayList<>();
 
     public CustomExecutor(int countOfWorkers, int initialCapacity) {
@@ -24,7 +24,7 @@ public class CustomExecutor<T> implements Executor<T> {
 
         taskQueue = new PriorityBlockingQueue<>(
                 initialCapacity,
-                Comparator.comparing(ExecutedTask::getTimeMark)
+                Comparator.comparing(ExecutingTask::getTimeMark)
 
         );
 
@@ -37,9 +37,9 @@ public class CustomExecutor<T> implements Executor<T> {
 
     @Override
     public Future<T> execute(Task<T> task) {
-        ExecutedTask<T> executedTask = new ExecutedTask<>(task);
-        taskQueue.add(executedTask);
-        return executedTask.getTask();
+        ExecutingTask<T> executingTask = new ExecutingTask<>(task);
+        taskQueue.add(executingTask);
+        return executingTask.getTask();
     }
 
     @Override

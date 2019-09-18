@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 import java.util.concurrent.FutureTask;
 
 @Value
-public class ExecutedTask<T> {
+public class ExecutingTask<T> {
 
     private LocalDateTime timeMark;
     private FutureTask<T> task;
 
-    public ExecutedTask(Task<T> task) {
+    public ExecutingTask(Task<T> task) {
         timeMark = task.getTimeMark();
         this.task = new FutureTask<>(task.getTask());
     }

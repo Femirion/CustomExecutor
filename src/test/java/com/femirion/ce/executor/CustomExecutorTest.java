@@ -1,7 +1,7 @@
 package com.femirion.ce.executor;
 
 import com.femirion.ce.exception.ExecutorException;
-import com.femirion.ce.task.ExecutedTask;
+import com.femirion.ce.task.ExecutingTask;
 import com.femirion.ce.task.Task;
 import org.junit.Test;
 
@@ -137,7 +137,7 @@ public class CustomExecutorTest {
         // timout that worker finish all tasks
         Thread.sleep(300);
 
-        List<ExecutedTask<String>> tasks = subj.getWorkerList().get(0).getFinishedTasks();
+        List<ExecutingTask<String>> tasks = subj.getWorkerList().get(0).getFinishedTasks();
 
         // when
         // time1 - first task
