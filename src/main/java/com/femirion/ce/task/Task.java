@@ -1,11 +1,8 @@
 package com.femirion.ce.task;
 
-import lombok.Value;
-
 import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 
-@Value
 public class Task<T> {
 
     private final LocalDateTime timeMark;
@@ -16,4 +13,11 @@ public class Task<T> {
         this.task = task;
     }
 
+    public LocalDateTime getTimeMark() {
+        return timeMark;
+    }
+
+    public Callable<T> getTask() {
+        return task;
+    }
 }

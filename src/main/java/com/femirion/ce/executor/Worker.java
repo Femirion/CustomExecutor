@@ -1,19 +1,22 @@
 package com.femirion.ce.executor;
 
 import com.femirion.ce.task.ExecutingTask;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-@Slf4j
 public class Worker<T> extends Thread {
+
+    private final static Logger log = LoggerFactory.getLogger(Worker.class);
 
     private final String workerName;
     private final BlockingQueue<ExecutingTask<T>> taskQueue;
+    // for JUnit, checking shutdown
     private volatile boolean finish = false;
-    // for JUnit
+    // for JUnit, checking priority
     private List<ExecutingTask<T>> finishedTask = new ArrayList<>();
 
     public Worker(String workerName, BlockingQueue<ExecutingTask<T>> taskQueue) {

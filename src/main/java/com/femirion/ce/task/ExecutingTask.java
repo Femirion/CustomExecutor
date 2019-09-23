@@ -1,11 +1,8 @@
 package com.femirion.ce.task;
 
-import lombok.Value;
-
 import java.time.LocalDateTime;
 import java.util.concurrent.FutureTask;
 
-@Value
 public class ExecutingTask<T> {
 
     private LocalDateTime timeMark;
@@ -16,4 +13,11 @@ public class ExecutingTask<T> {
         this.task = new FutureTask<>(task.getTask());
     }
 
+    public LocalDateTime getTimeMark() {
+        return timeMark;
+    }
+
+    public FutureTask<T> getTask() {
+        return task;
+    }
 }
