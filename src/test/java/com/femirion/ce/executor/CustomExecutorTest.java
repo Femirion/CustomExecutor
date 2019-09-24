@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class CustomExecutorTest {
 
@@ -134,7 +134,7 @@ public class CustomExecutorTest {
         Future<String> result4 = subj.execute(new Task<>(time4, () -> "test4"));
         Future<String> result5 = subj.execute(new Task<>(time5, () -> "test5"));
 
-        // timout that worker finish all tasks
+        // timout that worker will finish all tasks
         Thread.sleep(300);
 
         List<ExecutingTask<String>> tasks = subj.getWorkerList().get(0).getFinishedTasks();
@@ -147,6 +147,58 @@ public class CustomExecutorTest {
         assertEquals(time2, tasks.get(2).getTimeMark());
         assertEquals(time5, tasks.get(3).getTimeMark());
         assertEquals(time4, tasks.get(4).getTimeMark());
+    }
+
+    @Test
+    public void checkPriorityLotsOfTasks() throws Exception {
+        // given
+        int workersCount = 10;
+        int taskCounts = 10000;
+        CustomExecutor<String> subj = new CustomExecutor<>(workersCount, taskCounts);
+
+        // then
+        int[] trick = new int[1];
+
+        // add tasks with timeout of execution so that next task will be executed in time priority
+        for (int i = 0; i < workersCount * 2; i++) {
+            subj.execute(new Task<>(generateLocalDateTime(), () -> {
+                Thread.sleep(5000);
+                return "test";
+            }));
+        }
+
+
+        // this is normal tasks, without timeout
+        for (int i = 0; i < taskCounts; i++) {
+            int value = trick[0];
+            subj.execute(new Task<>(generateLocalDateTime(), () -> "test" + value));
+            trick[0] = value + 1;
+        }
+
+        // timout that all workers will finish all tasks
+        Thread.sleep(10000);
+
+
+        int countOfChecks = 0;
+        for (int i = 0; i < workersCount; i++) {
+            List<ExecutingTask<String>> finishedTasks = subj.getWorkerList().get(i).getFinishedTasks();
+            // check that all task was finished in right priority
+            // we start from 1 because first task will
+            for (int j = 20; j < finishedTasks.size() - 1; j++) {
+                LocalDateTime first = finishedTasks.get(j).getTimeMark();
+                LocalDateTime second = finishedTasks.get(j + 1).getTimeMark();
+                if (first.compareTo(second) >= 1) {
+                    System.out.println(countOfChecks + "  i=" + i + " j=" + j);
+                    fail();
+                }
+                countOfChecks++;
+            }
+        }
+
+        // if you have 10 workers and 10000 task, there will 9990 checks
+        // if you have 100 workers and 5000 task, there will only 4900
+        // it happens because we used "finishedTasks.size() - 1" in the loop
+        assertEquals(taskCounts - workersCount, countOfChecks);
     }
 
     @Test
@@ -218,7 +270,7 @@ public class CustomExecutorTest {
         // then
         for (int i = 0; i < 100; i++) {
             int value = trick[0];
-            Future<String> result = subj.execute(new Task<>(LocalDateTime.now(), () -> {
+            Future<String> result = subj.execute(new Task<>(generateLocalDateTime(), () -> {
                 // small sleep
                 Thread.sleep(10);
                 return "test" + value;
@@ -232,7 +284,7 @@ public class CustomExecutorTest {
         for (int i = 0; i < 100; i++) {
             assertEquals("test" + i, results.get(i).get());
         }
-        // max count of elements in once of time
+        // max count of elements in one moment of time
         int maxValue = countTaskInQueue.stream()
                 .max(Integer::compareTo)
                 .orElseThrow(RuntimeException::new);
@@ -242,5 +294,25 @@ public class CustomExecutorTest {
         // queue is empty
         assertEquals(0, subj.getQueueSize());
     }
+
+    private LocalDateTime generateLocalDateTime() {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        return LocalDateTime.of(
+                createRandomIntBetween(random, 1990, 2025), // year
+                createRandomIntBetween(random, 1, 12), // month
+                createRandomIntBetween(random, 1, 28), // day
+                createRandomIntBetween(random, 1, 23), // hour
+                createRandomIntBetween(random, 1, 59), // minute
+                createRandomIntBetween(random, 1, 59) // seconds
+        );
+
+
+    }
+
+    private int createRandomIntBetween(ThreadLocalRandom random, int start, int end) {
+        return random.nextInt(start, end);
+    }
+
 
 }
